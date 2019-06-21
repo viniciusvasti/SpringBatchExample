@@ -62,7 +62,7 @@ public class SpringBatchConfig {
 	}
 
 	@Bean
-	public Job importAutobotJob(JobCompletionNotificationListener listener) {
+	public Job importLogJob(JobCompletionNotificationListener listener) {
 		return jobBuilderFactory.get("importLogsJob")
 				.incrementer(new RunIdIncrementer())
 				.listener(listener)
