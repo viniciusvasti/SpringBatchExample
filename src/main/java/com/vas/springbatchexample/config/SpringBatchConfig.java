@@ -17,7 +17,7 @@ import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 
 import com.vas.springbatchexample.listeners.JobCompletionNotificationListener;
 import com.vas.springbatchexample.models.Log;
@@ -41,6 +41,7 @@ public class SpringBatchConfig {
 	@Bean
 	@StepScope
 	public FlatFileItemReader<Log> reader(@Value("#{jobParameters['file']}") String file) {
+		System.out.println(file);
 		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
 		tokenizer.setNames("data", "ip", "request", "status", "user_agent");
 		tokenizer.setDelimiter("|");
@@ -48,7 +49,7 @@ public class SpringBatchConfig {
 		defaultLineMapper.setLineTokenizer(tokenizer);
 		defaultLineMapper.setFieldSetMapper(new RecordFieldSetMapper());
 		FlatFileItemReader<Log> reader = new FlatFileItemReader<>();
-		reader.setResource(new ClassPathResource("access.log"));
+		reader.setResource(new FileSystemResource(file));
 		reader.setLineMapper(defaultLineMapper);
 		return reader;
 	}
