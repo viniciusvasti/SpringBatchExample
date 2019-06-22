@@ -22,7 +22,6 @@ public class SpringBatchExampleApplication {
 	public static void main(String[] args)
 			throws JobExecutionAlreadyRunningException, JobRestartException,
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
-		args = new String[] { "--file", "teste" };
 		if (args.length % 2 == 0) {
 			Map<String, String> params = new HashMap<>();
 			for (int i = 0; i < args.length; i += 2) {
