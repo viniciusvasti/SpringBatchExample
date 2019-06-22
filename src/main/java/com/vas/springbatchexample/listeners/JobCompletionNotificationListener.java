@@ -35,7 +35,7 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
 			for (Log log : results) {
 				logger.info("Found <" + log.toString() + "> in the database.");
 			}
-
+			logger.info("Count <" + results.size() + "> in the database.");
 		}
 	}
 }
