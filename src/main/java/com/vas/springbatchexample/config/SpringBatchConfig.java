@@ -7,12 +7,14 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -37,7 +39,8 @@ public class SpringBatchConfig {
 	}
 
 	@Bean
-	public FlatFileItemReader<Log> reader() {
+	@StepScope
+	public FlatFileItemReader<Log> reader(@Value("#{jobParameters['file']}") String file) {
 		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
 		tokenizer.setNames("data", "ip", "request", "status", "user_agent");
 		tokenizer.setDelimiter("|");
@@ -62,7 +65,7 @@ public class SpringBatchConfig {
 	}
 
 	@Bean
-	public Job importLogJob(JobCompletionNotificationListener listener) {
+	public Job importLogsJob(JobCompletionNotificationListener listener) {
 		return jobBuilderFactory.get("importLogsJob")
 				.incrementer(new RunIdIncrementer())
 				.listener(listener)
@@ -75,7 +78,7 @@ public class SpringBatchConfig {
 	public Step step1() {
 		return stepBuilderFactory.get("step1")
 				.<Log, Log>chunk(100)
-				.reader(reader())
+				.reader(reader(null))
 				.writer(writer())
 				.build();
 	}
